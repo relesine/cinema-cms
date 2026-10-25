@@ -1,0 +1,38 @@
+# ===== Java / Maven 后端 =====
+target/
+*.class
+*.jar
+!.mvn/wrapper/maven-wrapper.jar
+*.log
+hs_err_pid*
+
+# ===== 前端 Node / Vite =====
+node_modules/
+dist/
+dist-ssr/
+*.local
+.npm/
+.eslintcache
+
+# ===== 编辑器 / 系统 =====
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+
+# ===== 运行期产物 =====
+uploads/**/*
+!uploads/.gitkeep
+backend/run.log
+frontend/dev.log
+
+# ===== 环境密钥（生产请勿入库）=====
+application-local.yml
+application-prod.yml
+.env
+
+# ===== 运行日志 / 容器构建产物 =====
+logs/
+backend/logs/
+.npm_cache/

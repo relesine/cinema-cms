@@ -1,0 +1,103 @@
+server:
+  port: ${SERVER_PORT:8080}
+  # 统一上下文前缀，前端所有接口都以 /api 开头（配合 Vite 代理）
+  servlet:
+    context-path: /api
+
+spring:
+  application:
+    name: cms-server
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # 地址/端口/库名支持环境变量外置；serverTimezone 固定上海时区，避免时间差 8 小时
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:cms}?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true
+    username: ${DB_USERNAME:root}
+    password: "${DB_PASSWORD:123456}"
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 30000
+  redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASSWORD:}
+    database: 0
+    timeout: 5000ms
+  servlet:
+    multipart:
+      # 文件上传大小限制（电影海报/宣传图）
+      max-file-size: 10MB
+      max-request-size: 20MB
+  jackson:
+    # 后端返回 JSON 的时间格式与时区
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Shanghai
+
+# MyBatis Plus 配置
+mybatis-plus:
+  mapper-locations: classpath*:mapper/**/*.xml
+  type-aliases-package: com.starlight.cms.entity
+  configuration:
+    # 驼峰映射：数据库 create_time <-> Java createTime
+    map-underscore-to-camel-case: true
+    # SQL 日志默认关闭（排查问题时可临时切回 StdOutImpl），统一走 logback 三通道
+    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+  global-config:
+    banner: false
+    db-config:
+      id-type: AUTO          # 主键自增，与数据库 AUTO_INCREMENT 一致
+      logic-delete-field: isDeleted
+      logic-delete-value: 1   # 已删除
+      logic-not-delete-value: 0
+
+# ====== 项目自定义参数 ======
+cms:
+  jwt:
+    # HMAC 密钥支持环境变量 JWT_SECRET 外置（生产请设置 32 位以上随机串）
+    secret: ${JWT_SECRET:starlight-cms-secret-key-2026-please-change-in-prod-0123456789}
+    # 令牌有效期：毫秒，此处 24 小时
+    expire: ${JWT_EXPIRE:86400000}
+    header: Authorization
+  upload:
+    # 本地文件存储目录，支持环境变量 FILE_UPLOAD_PATH 外置（容器化部署挂载卷）
+    path: ${FILE_UPLOAD_PATH:F:/AI_full-stack_project/CMS/uploads/}
+    # 浏览器访问前缀（context-path=/api 之下）
+    url-prefix: /upload/
+
+# ====== 在线接口文档（Swagger 3） ======
+# 访问：http://localhost:8080/api/swagger-ui/index.html
+# 生产环境可通过 SPRINGDOC_ENABLED=false 关闭
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+    enabled: ${SPRINGDOC_ENABLED:true}
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: ${SPRINGDOC_ENABLED:true}
+
+# ====== Actuator 运维监控 ======
+# 完整路径带 context 前缀：http://localhost:8080/api/actuator/health
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+      base-path: /actuator
+  endpoint:
+    health:
+      # 详情完整暴露（学习/内网开放；公网可关）
+      show-details: always
+      show-components: always
+  health:
+    redis:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+# ====== 日志统一交给 logback-spring.xml 三通道管理 ======
+logging:
+  config: classpath:logback-spring.xml
+  level:
+    com.starlight.cms: info
+    org.springframework: warn

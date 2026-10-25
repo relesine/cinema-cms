@@ -1,0 +1,35 @@
+{
+  "name": "cms-frontend",
+  "version": "1.1.0",
+  "description": "星光国际影城电影院管理系统前端（用户购票端/员工端/管理后台三模块单工程）",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --fix",
+    "lint:check": "eslint .",
+    "format": "prettier --write \"src/**/*.{js,vue,css}\""
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.3.1",
+    "axios": "^1.6.8",
+    "echarts": "^5.5.0",
+    "element-plus": "^2.7.6",
+    "pinia": "^2.1.7",
+    "vue": "^3.4.27",
+    "vue-router": "^4.3.2"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.4",
+    "@vitejs/plugin-vue": "^5.0.4",
+    "eslint": "^9.39.4",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.7",
+    "eslint-plugin-vue": "^9.33.0",
+    "globals": "^15.15.0",
+    "prettier": "^3.9.10",
+    "vite": "^5.2.11"
+  }
+}

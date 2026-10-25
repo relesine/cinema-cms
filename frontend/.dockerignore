@@ -1,0 +1,7 @@
+node_modules
+dist
+dev.log
+dev_err.log
+.idea
+.vscode
+npm-debug.log*
